@@ -7,8 +7,7 @@ Created on Fri Jan 31 08:51:03 2020
 
 #==================================================
 # Implementacion de   ELM 
-# Caso: v.a. normal y  uniforme
-# Autor: MFlores, 2020
+# Autor: MFlores, Enero 2020
 #==================================================
 #  Datos
 #  i |  x_i    | y_i
@@ -88,30 +87,6 @@ def funcion_Multiquadrics(a,b,x):
     aux  = np.linalg.norm(x-a)
     return np.sqrt(aux*aux + b*b)
 
-#-------------------------------------------  
-#-------------------------------------------    
-#def Yi_2_Ti(Y):
-#    r = len(Y)
-#    mx = np.max(Y)
-#    #print("Maximo: ",mx)
-#    T = np.zeros((r,mx))
-#    for i in range(r):        
-#        for j in range(mx):
-#            print(j)
-#            if Y[i] ==j:
-#                T[j] = j+1
-#    return T
-#
-##-------------------------------------------
-#Y = np.array([[1],
-#              [1],
-#              [2],
-#              [2],
-#              [2],
-#              [3]])
-#TT = Yi_2_Ti(Y)
-#print(TT)
-    
 #=================================================
 #=================================================
 # Datos de entrenamiento 
@@ -135,7 +110,7 @@ plt.scatter(X[:,0], X[:,1])
 plt.title('Datos')
 plt.show()
 #-------------------------------------------
-L   = 500  # numero de capas ocultas 5e06 no puede operar
+L   = 500 
 N,d = X.shape
 m   = T.shape[1]
 

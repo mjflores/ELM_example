@@ -63,29 +63,6 @@ def generar_H(a,b,X,N,L):
 def funcion_Sigmoid(a,b,x):
     aux = np.dot(a,x) + b
     return 1.0/(1.0+np.exp(-aux))
-#-------------------------------------------
-
-def funcion_Fourier(a,b,x):
-    aux = np.dot(a,x) + b
-    return np.sin(aux)
-#-------------------------------------------
-
-def funcion_Hardlimit(a,b,x):
-    aux = np.dot(a,x)- b
-    if aux >=0:
-        return 1.0
-    else:
-        return 0.0
-#-------------------------------------------
-
-def funcion_Gaussian(a,b,x):
-    aux  = np.linalg.norm(x-a)
-    return np.exp(-b*aux*aux)
-#-------------------------------------------
-
-def funcion_Multiquadrics(a,b,x):
-    aux  = np.linalg.norm(x-a)
-    return np.sqrt(aux*aux + b*b)
 
 #=================================================
 #=================================================
@@ -117,13 +94,10 @@ m   = T.shape[1]
 a, b    = generar_a_b(L,d)
 H, H_tr = generar_H(a,b,X,N,L)
 
+# Constante C (por el usuario)
 C = .10
 
 print('Sigmoid',funcion_Sigmoid(np.array([1,2]),1,np.array([2,2])))
-print('Fourier',funcion_Fourier(np.array([1,2]),1,np.array([2,2])))
-print('HardLimit',funcion_Hardlimit(np.array([1,2]),1,np.array([2,2])))
-print('Gausian',funcion_Gaussian(np.array([1,2]),1,np.array([2,2])))
-print('Multiquadrics',funcion_Multiquadrics(np.array([1,2]),1,np.array([2,2])))
 
 # Version cuando N grande
 I1   = np.identity(L)/C

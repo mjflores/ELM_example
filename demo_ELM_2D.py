@@ -40,15 +40,15 @@ import numpy as np
 
 #-------------------------------------------
 
-def generar_a_b(row,col):
-    a = np.zeros((row,col))
+def generar_a_b(row_d,col_L):
+    a = np.zeros((row_d,col_L))
     rg = 15.0
-    for i in range(row):
-        for j in range(col):
+    for i in range(row_d):
+        for j in range(col_L):
             a[i,j] = rn.uniform(-10.90,10.90)
             #a[i,j] = rn.uniform(0.0,4*rg)
             #a[i,j] = rn.gauss(0.0,1*rg)
-    b = [rn.uniform(0.0,4*rg) for _ in range(L)]           
+    b = [rn.uniform(0.0,4*rg) for _ in range(col_L)]           
     return a, b
 #-------------------------------------------
     
@@ -56,14 +56,14 @@ def generar_H(a,b,X,N,L):
     H = np.zeros((N,L))
     for i in range(N):
         for j in range(L):
-            H[i,j] = funcion_Sigmoid(a[j,:],b[j],X[i,:])
+            #print(a[:,j])    
+            H[i,j] = funcion_Sigmoid(a[:,j],b[j],X[i,:])
     return H, H.transpose()
 #-------------------------------------------
 
 def funcion_Sigmoid(a,b,x):
     aux = np.dot(a,x) + b
-    return 1.0/(1.0+np.exp(-aux))
-
+    return 1.0/(1.0+np.exp(-aux))   
 #=================================================
 #=================================================
 # Datos de entrenamiento 
@@ -83,29 +83,26 @@ T = np.array([[1,0],
               [0,1]])
 
 #-------------------------------------------
+
 plt.scatter(X[:,0], X[:,1])
-plt.title('Datos')
+plt.title('Datos para ELM')
 plt.show()
 #-------------------------------------------
-L   = 500 
+L   = 700  # numero de capas ocultas 5e06 no puede operar
 N,d = X.shape
 m   = T.shape[1]
 
-a, b    = generar_a_b(L,d)
+a, b    = generar_a_b(d,L)
+#print("Dimension a: ",a.shape)
 H, H_tr = generar_H(a,b,X,N,L)
 
-# Constante C (por el usuario)
 C = .10
-
-print('Sigmoid',funcion_Sigmoid(np.array([1,2]),1,np.array([2,2])))
 
 # Version cuando N grande
 I1   = np.identity(L)/C
 aux1 = np.linalg.inv((I1 + np.matmul(H_tr,H)))
 aux2 = np.matmul(H_tr,T)
 beta1 = np.matmul(aux1,aux2) 
-# print(beta1)
-# print("-------------------------------")
 
 
 # Version cuando N pequeño
@@ -113,27 +110,27 @@ I2   = np.identity(N)/C
 aux1 = np.linalg.inv((I2 + np.matmul(H,H_tr)))
 aux2 = np.matmul(H_tr,aux1)
 beta2 = np.matmul(aux2,T) 
-# print(beta2)
 
+#-------------------------------------------
 def fx(xnew):
     hx = np.zeros(L)
     for j in range(L):
-        hx[j] = funcion_Sigmoid(a[j,:],b[j],xnew)
+        hx[j] = funcion_Sigmoid(a[:,j],b[j],xnew)
         
-    print(hx.shape)
+    #print(hx.shape)
     fx1 = np.matmul(hx,beta1)
     return fx1
     
 #-------------------------------------------
 #xnew = np.array([[-2,-3],[3,3]])
-#xnew = np.array([-3,-3])
-xnew = np.array([+3,+3])
+xnew = np.array([-3,-3])
+#xnew = np.array([+3,+3])
+
 hx = np.zeros(L)
 for j in range(L):
-    hx[j] = funcion_Sigmoid(a[j,:],b[j],xnew)
+    hx[j] = funcion_Sigmoid(a[:,j],b[j],xnew)
     
-print(hx.shape)
 fx1 = np.matmul(hx,beta1)
 fx2 = np.matmul(hx,beta2)
-print(fx1)
-print(fx2)
+print("fx1 = ",fx1)
+print("fx2 = ",fx2)

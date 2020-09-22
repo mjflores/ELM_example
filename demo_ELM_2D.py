@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jan 31 08:51:03 2020
+        Basic implementation of ELM
 
+@date: 31/01/2020
 @author: mjflores
 """
 
@@ -14,10 +15,15 @@ Created on Fri Jan 31 08:51:03 2020
 #-------------------
 # 1    (-2,-2)   (1,0)
 # 2    (-1,-1)   (1,0)
-# 3    (+1,+1)   (0,1)
-# 4    (+2,+2)   (0,1)
-# 4    (-2,-4)   (1,0)
-# 4    (+2,+4)   (0,1)
+# 3    (-2,-4)   (1,0)
+# 4    (-3,-3)   (1,0)
+# 5    (-2,-3)   (0,1)
+# 6    (+1,+1)   (0,1)
+# 7    (+2,+2)   (0,1)
+# 8    (+2,+4)   (0,1)
+# 9    (+3,+3)   (0,1)
+# 10   (+2,+3)   (0,1)
+
 
 #-------------------------------------------
 
@@ -41,14 +47,8 @@ import numpy as np
 #-------------------------------------------
 
 def generar_a_b(row_d,col_L):
-    a = np.zeros((row_d,col_L))
-    rg = 15.0
-    for i in range(row_d):
-        for j in range(col_L):
-            a[i,j] = rn.uniform(-10.90,10.90)
-            #a[i,j] = rn.uniform(0.0,4*rg)
-            #a[i,j] = rn.gauss(0.0,1*rg)
-    b = [rn.uniform(0.0,4*rg) for _ in range(col_L)]           
+    a = np.random.uniform(-1,1,size=(row_d,col_L))
+    b = np.random.uniform(-1,1,size=(col_L,1))
     return a, b
 #-------------------------------------------
     
@@ -70,25 +70,32 @@ def funcion_Sigmoid(a,b,x):
 
 X = np.array([[-2,-2],
               [-1,-1],
+              [-2,-4],
+              [-3,-3],
+              [-2,-3],
               [1,1],
               [2,2],
-              [-2,-4],
-              [2,4]])
+              [2,4],
+              [3,3],
+              [2,4],])
 
 T = np.array([[1,0],
               [1,0],
-              [0,1],
-              [0,1],
               [1,0],
+              [1,0],
+              [1,0],
+              [0,1],
+              [0,1],
+              [0,1],
+              [0,1],
               [0,1]])
-
 #-------------------------------------------
 
 plt.scatter(X[:,0], X[:,1])
 plt.title('Datos para ELM')
 plt.show()
 #-------------------------------------------
-L   = 700  # numero de capas ocultas 5e06 no puede operar
+L   = 70  # numero de capas ocultas 5e06 no puede operar
 N,d = X.shape
 m   = T.shape[1]
 
@@ -98,19 +105,22 @@ H, H_tr = generar_H(a,b,X,N,L)
 
 C = .10
 
+beta = []
 # Version cuando N grande
-I1   = np.identity(L)/C
-aux1 = np.linalg.inv((I1 + np.matmul(H_tr,H)))
-aux2 = np.matmul(H_tr,T)
-beta1 = np.matmul(aux1,aux2) 
-
-
+if N>L: 
+    # Eq (11)
+    I1   = np.identity(L)/C
+    aux1 = np.linalg.inv((I1 + np.matmul(H_tr,H)))
+    aux2 = np.matmul(H_tr,T)
+    beta1 = np.matmul(aux1,aux2) 
+    beta = beta1
 # Version cuando N pequeño
-I2   = np.identity(N)/C
-aux1 = np.linalg.inv((I2 + np.matmul(H,H_tr)))
-aux2 = np.matmul(H_tr,aux1)
-beta2 = np.matmul(aux2,T) 
-
+else:
+    I2   = np.identity(N)/C
+    aux1 = np.linalg.inv((I2 + np.matmul(H,H_tr)))
+    aux2 = np.matmul(H_tr,aux1)
+    beta2 = np.matmul(aux2,T) 
+    beta = beta2
 #-------------------------------------------
 def fx(xnew):
     hx = np.zeros(L)
@@ -122,15 +132,11 @@ def fx(xnew):
     return fx1
     
 #-------------------------------------------
-#xnew = np.array([[-2,-3],[3,3]])
-xnew = np.array([-3,-3])
-#xnew = np.array([+3,+3])
 
-hx = np.zeros(L)
-for j in range(L):
-    hx[j] = funcion_Sigmoid(a[:,j],b[j],xnew)
+xnew1 = np.array([-3,-3])
+xnew2 = np.array([+0,+2])
     
-fx1 = np.matmul(hx,beta1)
-fx2 = np.matmul(hx,beta2)
+fx1 = fx(xnew1)
+fx2 = fx(xnew2)
 print("fx1 = ",fx1)
 print("fx2 = ",fx2)

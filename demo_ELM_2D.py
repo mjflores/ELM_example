@@ -92,7 +92,9 @@ T = np.array([[1,0],
 #-------------------------------------------
 
 plt.scatter(X[:,0], X[:,1])
-plt.title('Datos para ELM')
+plt.title('Datos para ajustar ELM')
+plt.xtitle('X')
+plt.ytitle('Y')
 plt.show()
 #-------------------------------------------
 L   = 70  # numero de capas ocultas 5e06 no puede operar
